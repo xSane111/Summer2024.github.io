@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spacecraft Data Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            height: 100vh;
+            grid-template-areas:
+                "date spacecraft"
+                "plot plot"
+                "data data";
+        }
+
+        .date-selector {
+            grid-area: date;
+            padding: 10px;
+        }
+
+        .spacecraft-selector {
+            grid-area: spacecraft;
+            padding: 10px;
+            text-align: right;
+        }
+
+        .plot-area {
+            grid-area: plot;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9;
+        }
+
+        .data-area {
+            grid-area: data;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Date Selector -->
+    <div class="date-selector">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date">
+    </div>
+
+    <!-- Spacecraft Selector -->
+    <div class="spacecraft-selector">
+        <label for="spacecraft">Select Spacecraft:</label>
+        <select id="spacecraft">
+            <option value="apollo">Apollo</option>
+            <option value="voyager">Voyager</option>
+            <option value="iss">ISS</option>
+        </select>
+    </div>
+
+    <!-- Plot Area -->
+    <div class="plot-area" id="plot">
+        <p>Data plot will appear here.</p>
+    </div>
+
+    <!-- Data Area -->
+    <div class="data-area" id="data">
+        <p>Numerical data will appear here.</p>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://your-backend-url.com/get_data'; // Replace with your actual backend URL
+
+        async function fetchData() {
+            const date = document.getElementById('date').value;
+            const spacecraft = document.getElementById('spacecraft').value;
+
+            // Validate inputs
+            if (!date || !spacecraft) {
+                alert('Please select a date and spacecraft.');
+                return;
+            }
+
+            try {
+                // Send POST request to the backend
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date, spacecraft })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    alert(`Error: ${error.error || 'Failed to fetch data'}`);
+                    return;
+                }
+
+                const data = await response.json();
+
+                // Update plot
+                const plotArea = document.getElementById('plot');
+                const img = new Image();
+                img.src = 'data:image/png;base64,' + btoa(data.plot);
+                plotArea.innerHTML = ''; // Clear the plot area
+                plotArea.appendChild(img);
+
+                // Update numerical data
+                const dataContainer = document.getElementById('data');
+                const table = document.createElement('table');
+                table.style.width = '100%';
+                table.style.borderCollapse = 'collapse';
+
+                // Add table headers
+                const headerRow = document.createElement('tr');
+                const headers = Object.keys(data.data[0]);
+                headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    th.style.border = '1px solid #ddd';
+                    th.style.padding = '8px';
+                    th.style.textAlign = 'left';
+                    headerRow.appendChild(th);
+                });
+                table.appendChild(headerRow);
+
+                // Add table rows
+                data.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    Object.values(row).forEach(value => {
+                        const td = document.createElement('td');
+                        td.textContent = value;
+                        td.style.border = '1px solid #ddd';
+                        td.style.padding = '8px';
+                        tr.appendChild(td);
+                    });
+                    table.appendChild(tr);
+                });
+
+                dataContainer.innerHTML = ''; // Clear the data area
+                dataContainer.appendChild(table);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                alert('An error occurred while fetching data. Please try again.');
+            }
+        }
+
+        // Attach event listeners
+        document.getElementById('date').addEventListener('change', fetchData);
+        document.getElementById('spacecraft').addEventListener('change', fetchData);
+    </script>
+</body>
+</html>
