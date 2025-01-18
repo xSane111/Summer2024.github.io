@@ -2,7 +2,7 @@ import json
 from flask import Flask, request, jsonify
 import matplotlib.pyplot as plt
 import numpy as np
-from ai import cdas
+import cdasws
 import io
 import base64
 from datetime import datetime
@@ -11,12 +11,13 @@ app = Flask(__name__)
 
 def download_OMNI(start, end):
     try:
-        omni_1min = cdas.get_data(
-            'istp_public',
+        client=cdasws.CDAS()
+        params=["F", "BX_GSE", "BY_GSE", "BZ_GSE", "flow_speed", "proton_density", "T", "Beta", "SYM_H"]
+        omni_1min = client.get_data(
             'OMNI_HRO_1MIN',
             start,
             end,
-            ["F", "BX_GSE", "BY_GSE", "BZ_GSE", "flow_speed", "proton_density", "T", "Beta", "SYM_H"]
+            params
         )
     except:
         print("Incorrect date or no data exist for OMNI")
