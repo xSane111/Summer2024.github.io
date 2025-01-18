@@ -1,61 +1,28 @@
-name: Deploy to GitHub Pages and Backend
+name: Python backend
 
 on:
   push:
     branches:
-      - main  # Trigger when changes are pushed to the `main` branch
-  pull_request:
-    branches:
-      - main  # Trigger on PR to main branch
+      - main
 
 jobs:
-  # Job to deploy the frontend to GitHub Pages
-  deploy_frontend:
+  build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js (for frontend build tools if necessary)
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - name: Install dependencies (optional)
-        run: |
-          npm install
-
-      - name: Build the frontend (if necessary)
-        run: |
-          # If you are using a build tool like Webpack or a framework that requires build steps
-          npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist  # The directory with your built frontend (adjust if needed)
-
-  # Job to deploy the backend (Flask)
-  deploy_backend:
-    runs-on: ubuntu-latest
-    needs: deploy_frontend  # Ensure frontend is deployed first
 
     steps:
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Set up Python environment
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: '3.8'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install flask cdas matplotlib numpy
 
-      - name: Run the Flask app
+      - name: Run Flask app
         run: |
-          nohup python backend.py &  # Running Flask app in the background
-          # You can set this up with a deployment provider if running a cloud server (e.g., AWS, Heroku)
+          nohup python backend.py &
