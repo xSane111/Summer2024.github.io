@@ -1,27 +1,42 @@
 function fetchAndPlotData() {
-    const date = document.getElementById("date").value;
+    const startDateTime = document.getElementById("start-date").value;
+    const endDateTime = document.getElementById("end-date").value;
     const spacecraft = document.getElementById("spacecraft").value;
 
-    if (!date || !spacecraft) {
-        alert("Please select both a date and a spacecraft.");
+    if (!startDateTime || !endDateTime || !spacecraft) {
+        alert("Please select a start date, end date, and spacecraft.");
         return;
     }
 
-    // Fetch data from the backend using a fetch request (GitHub Actions will handle backend logic)
-    fetch(`/get_data?date=${date}&spacecraft=${spacecraft}`)
+    // Convert datetime-local string to format the backend can process
+    const startDate = new Date(startDateTime);
+    const endDate = new Date(endDateTime);
+
+    // Format dates as strings in ISO format
+    const startFormatted = startDate.toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
+    const endFormatted = endDate.toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
+
+    // Fetch data from the backend using the formatted date and spacecraft parameters
+    fetch(`/get_data?start=${startFormatted}&end=${endFormatted}&spacecraft=${spacecraft}`)
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
             plotData(data.plotData);
             displayData(data.rawData);
         })
         .catch(error => {
             console.error("Error fetching data:", error);
+            alert("An error occurred while fetching data.");
         });
 }
 
 function plotData(plotData) {
     const plotBox = document.getElementById("plot-box");
-    
+
     Plotly.newPlot(plotBox, plotData);
 }
 
