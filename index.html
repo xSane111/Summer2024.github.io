@@ -5,26 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spacecraft Data Plotter</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/plotly.js"></script> <!-- For plotting -->
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js"></script>
 </head>
 <body>
     <div class="header">
         <div class="top-left">
-            <label for="date">Select Date:</label>
-            <input type="date" id="date" name="date">
+            <label for="start-date">Select Start Date and Time:</label>
+            <input type="datetime-local" id="start-date" name="start-date">
+        </div>
+        <div class="top-right">
+            <label for="end-date">Select End Date and Time:</label>
+            <input type="datetime-local" id="end-date" name="end-date">
         </div>
         <div class="top-right">
             <label for="spacecraft">Select Spacecraft:</label>
             <select id="spacecraft">
-                <option value="ace">ACE</option>
-                <option value="wind">WIND</option>
-                <!-- Add more spacecraft options as needed -->
+                <option value="omni">OMNI</option>
+                <option value="psp">PSP</option>
             </select>
         </div>
     </div>
 
     <div class="plot-box" id="plot-box">
-        <!-- Plotting area will be dynamically populated -->
+        <!-- Plot will be shown here -->
     </div>
 
     <div class="data-box" id="data-box">
