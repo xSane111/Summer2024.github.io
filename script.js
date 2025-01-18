@@ -1,23 +1,15 @@
 function fetchAndPlotData() {
-    const startDateTime = document.getElementById("start-date").value;
-    const endDateTime = document.getElementById("end-date").value;
+    const startDate = document.getElementById("start-date").value;
+    const endDate = document.getElementById("end-date").value;
     const spacecraft = document.getElementById("spacecraft").value;
 
-    if (!startDateTime || !endDateTime || !spacecraft) {
+    if (!startDate || !endDate || !spacecraft) {
         alert("Please select a start date, end date, and spacecraft.");
         return;
     }
 
-    // Convert datetime-local string to format the backend can process
-    const startDate = new Date(startDateTime);
-    const endDate = new Date(endDateTime);
-
-    // Format dates as strings in ISO format
-    const startFormatted = startDate.toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
-    const endFormatted = endDate.toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
-
-    // Fetch data from the backend using the formatted date and spacecraft parameters
-    fetch(`/get_data?start=${startFormatted}&end=${endFormatted}&spacecraft=${spacecraft}`)
+    // Fetch data from the backend using the date and spacecraft parameters
+    fetch(`/get_data?start=${startDate}&end=${endDate}&spacecraft=${spacecraft}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
