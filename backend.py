@@ -1,10 +1,11 @@
+import json
 from flask import Flask, request, jsonify
-from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 from ai import cdas
 import io
 import base64
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -31,12 +32,8 @@ def get_data():
     if not start_date or not end_date or not spacecraft:
         return jsonify({"error": "Missing parameters"}), 400
 
-    # Convert the datetime strings to datetime objects
-    try:
-        start = datetime.fromisoformat(start_date)
-        end = datetime.fromisoformat(end_date)
-    except ValueError:
-        return jsonify({"error": "Invalid date format"}), 400
+    start = datetime.strptime(start_date, '%Y-%m-%d')
+    end = datetime.strptime(end_date, '%Y-%m-%d')
 
     # Fetch data based on the spacecraft
     if spacecraft == 'omni':
