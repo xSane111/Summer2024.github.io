@@ -1,4 +1,4 @@
-name: Python backend
+name: Deploy Python Backend
 
 on:
   push:
@@ -6,23 +6,18 @@ on:
       - main
 
 jobs:
-  build:
+  backend:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
-
+          python-version: 3.x
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flask cdas matplotlib numpy
-
-      - name: Run Flask app
+          pip install cdasws plotly
+      - name: Run the backend script
         run: |
-          nohup python backend.py &
+          python backend.py
