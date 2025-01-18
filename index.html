@@ -1,75 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spacecraft Data Viewer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      background-color: #333;
-      color: white;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #plot {
-      width: 80%;
-      height: 60vh;
-      border: 1px solid #ccc;
-      margin: 10px 0;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background-color: #f4f4f4;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spacecraft Data Plotter</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js"></script> <!-- For plotting -->
 </head>
 <body>
-  <header>
-    <div>
-      <label for="date">Select Date:</label>
-      <input type="date" id="date">
+    <div class="header">
+        <div class="top-left">
+            <label for="date">Select Date:</label>
+            <input type="date" id="date" name="date">
+        </div>
+        <div class="top-right">
+            <label for="spacecraft">Select Spacecraft:</label>
+            <select id="spacecraft">
+                <option value="ace">ACE</option>
+                <option value="wind">WIND</option>
+                <!-- Add more spacecraft options as needed -->
+            </select>
+        </div>
     </div>
-    <div>
-      <label for="spacecraft">Select Spacecraft:</label>
-      <select id="spacecraft">
-        <option value="ace">ACE</option>
-        <option value="dscovr">DSCOVR</option>
-        <option value="wind">Wind</option>
-      </select>
+
+    <div class="plot-box" id="plot-box">
+        <!-- Plotting area will be dynamically populated -->
     </div>
-  </header>
-  <main>
-    <div id="plot">Plot will be displayed here</div>
-    <button id="fetchData">Fetch and Plot Data</button>
-  </main>
-  <footer>
-    <div id="dataDisplay">Data and download link will appear here</div>
-  </footer>
-  <script src="script.js"></script>
+
+    <div class="data-box" id="data-box">
+        <!-- Data and download link will be populated here -->
+    </div>
+
+    <button onclick="fetchAndPlotData()">Fetch and Plot Data</button>
+
+    <script src="script.js"></script>
 </body>
 </html>
