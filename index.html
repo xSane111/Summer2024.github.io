@@ -3,39 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spacecraft Data Plotter</title>
+    <title>Spacecraft Data Visualization</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/plotly.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.18.3/plotly.min.js"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="top-left">
-            <label for="start-date">Select Start Date:</label>
-            <input type="date" id="start-date" name="start-date">
+    <header>
+        <h1>Spacecraft Data Viewer</h1>
+        <div class="inputs">
+            <div class="date-time-picker">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date">
+                <label for="start-time">Start Time:</label>
+                <input type="time" id="start-time">
+                
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date">
+                <label for="end-time">End Time:</label>
+                <input type="time" id="end-time">
+            </div>
+            <div class="spacecraft-picker">
+                <label for="spacecraft">Spacecraft:</label>
+                <select id="spacecraft">
+                    <option value="ACE">ACE</option>
+                    <option value="THEMIS">THEMIS</option>
+                    <option value="DSCOVR">DSCOVR</option>
+                    <!-- Add other spacecraft options -->
+                </select>
+            </div>
         </div>
-        <div class="top-right">
-            <label for="end-date">Select End Date:</label>
-            <input type="date" id="end-date" name="end-date">
+    </header>
+
+    <div class="content">
+        <div id="plot-container">
+            <h2>Data Plot</h2>
+            <div id="plot"></div>
         </div>
-        <div class="top-right">
-            <label for="spacecraft">Select Spacecraft:</label>
-            <select id="spacecraft">
-                <option value="omni">OMNI</option>
-                <option value="psp">PSP</option>
-            </select>
+        
+        <div id="data-container">
+            <h2>Raw Data</h2>
+            <pre id="data-output"></pre>
+            <button id="download-btn">Download Data</button>
         </div>
     </div>
 
-    <div class="plot-box" id="plot-box">
-        <!-- Plot will be shown here -->
-    </div>
+    <footer>
+        <button id="fetch-data-btn">Fetch Data</button>
+    </footer>
 
-    <div class="data-box" id="data-box">
-        <!-- Data and download link will be populated here -->
-    </div>
-
-    <button onclick="fetchAndPlotData()">Fetch and Plot Data</button>
-
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
-</html
+</html>
