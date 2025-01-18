@@ -1,47 +1,57 @@
-function fetchAndPlotData() {
-    const startDate = document.getElementById("start-date").value;
-    const endDate = document.getElementById("end-date").value;
-    const spacecraft = document.getElementById("spacecraft").value;
+document.getElementById('fetch-data-btn').addEventListener('click', function() {
+    const startDate = document.getElementById('start-date').value;
+    const startTime = document.getElementById('start-time').value;
+    const endDate = document.getElementById('end-date').value;
+    const endTime = document.getElementById('end-time').value;
+    const spacecraft = document.getElementById('spacecraft').value;
 
-    if (!startDate || !endDate || !spacecraft) {
-        alert("Please select a start date, end date, and spacecraft.");
-        return;
-    }
+    const requestData = {
+        startDate: `${startDate}T${startTime}`,
+        endDate: `${endDate}T${endTime}`,
+        spacecraft: spacecraft
+    };
 
-    // Fetch data from the backend using the date and spacecraft parameters
-    fetch(`/get_data?start=${startDate}&end=${endDate}&spacecraft=${spacecraft}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
+    fetchDataFromBackend(requestData);
+});
 
-            plotData(data.plotData);
-            displayData(data.rawData);
-        })
-        .catch(error => {
-            console.error("Error fetching data:", error);
-            alert("An error occurred while fetching data.");
-        });
+function fetchDataFromBackend(data) {
+    fetch('https://your-backend-endpoint.com/data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        updatePlot(data.plotData);
+        updateData(data.rawData);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
 }
 
-function plotData(plotData) {
-    const plotBox = document.getElementById("plot-box");
+function updatePlot(plotData) {
+    const layout = {
+        title: 'Spacecraft Data',
+        xaxis: { title: 'Time' },
+        yaxis: { title: 'Data Values' }
+    };
 
-    Plotly.newPlot(plotBox, plotData);
+    Plotly.newPlot('plot', plotData, layout);
 }
 
-function displayData(rawData) {
-    const dataBox = document.getElementById("data-box");
+function updateData(rawData) {
+    const dataOutput = document.getElementById('data-output');
+    dataOutput.textContent = JSON.stringify(rawData, null, 2);
 
-    // Display the raw data as JSON
-    dataBox.innerHTML = `<pre>${JSON.stringify(rawData, null, 2)}</pre>`;
-
-    // Create a download link for the data
-    const downloadLink = document.createElement('a');
-    downloadLink.href = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(rawData))}`;
-    downloadLink.download = "data.json";
-    downloadLink.textContent = "Download Data";
-    dataBox.appendChild(downloadLink);
+    const downloadBtn = document.getElementById('download-btn');
+    downloadBtn.addEventListener('click', function() {
+        const blob = new Blob([JSON.stringify(rawData)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'spacecraft_data.json';
+        link.click();
+    });
 }
